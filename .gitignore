@@ -1,0 +1,6 @@
+# dependencies
+vendor
+.vendor
+.tools
+.env
+.php_releases.html

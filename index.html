@@ -1,0 +1,1432 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Forever Us - For Lilian</title>
+<style>
+:root {
+  --ink: #f8fafc;
+  --ink-muted: #e2e8f0;
+  --surface: rgba(10, 18, 35, 0.42);
+  --surface-strong: rgba(8, 14, 28, 0.62);
+  --border: rgba(255, 255, 255, 0.2);
+  --brand-1: #14b8a6;
+  --brand-2: #0ea5e9;
+  --warn-1: #64748b;
+  --warn-2: #475569;
+  --shadow: 0 20px 44px rgba(2, 6, 23, 0.42);
+  --bg: radial-gradient(circle at 20% 10%, #1d4ed8 0%, #0f172a 48%, #020617 100%);
+}
+
+body[data-theme="day"] {
+  --ink: #0f172a;
+  --ink-muted: #334155;
+  --surface: rgba(255, 255, 255, 0.76);
+  --surface-strong: rgba(241, 245, 249, 0.9);
+  --border: rgba(15, 23, 42, 0.2);
+  --brand-1: #0f766e;
+  --brand-2: #0369a1;
+  --warn-1: #64748b;
+  --warn-2: #475569;
+  --shadow: 0 20px 44px rgba(15, 23, 42, 0.24);
+  --bg: radial-gradient(circle at 20% 10%, #c7d2fe 0%, #e2e8f0 48%, #f8fafc 100%);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100%;
+  color: var(--ink);
+  font-family: Georgia, 'Times New Roman', serif;
+  background: var(--bg);
+  overflow-x: hidden;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: calc(10px + env(safe-area-inset-top)) 16px 10px;
+  background: rgba(2, 6, 23, 0.65);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  font-size: 0.98rem;
+}
+
+.brand-logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  color: #fff;
+  background: linear-gradient(135deg, #ef4444, #db2777);
+  box-shadow: 0 8px 18px rgba(2, 6, 23, 0.35);
+  line-height: 1;
+}
+
+.navbar-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+button {
+  border: 0;
+  min-height: 44px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 0.96rem;
+  font-weight: 700;
+  cursor: pointer;
+  color: #fff;
+  background: linear-gradient(135deg, var(--brand-1), var(--brand-2));
+  box-shadow: 0 10px 24px rgba(2, 6, 23, 0.35);
+}
+
+button:focus-visible {
+  outline: 3px solid #93c5fd;
+  outline-offset: 2px;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--ink);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  min-height: 42px;
+  padding: 10px;
+}
+
+body[data-theme="day"] input,
+body[data-theme="day"] select,
+body[data-theme="day"] textarea {
+  background: rgba(255, 255, 255, 0.75);
+}
+
+.container {
+  width: min(100%, 960px);
+  margin: 0 auto;
+  padding: 84px 12px 20px;
+}
+
+.card {
+  display: none;
+  position: relative;
+  min-height: calc(100dvh - 112px);
+  border-radius: 18px;
+  overflow: hidden;
+  background: linear-gradient(140deg, rgba(3, 7, 18, 0.55), rgba(15, 23, 42, 0.7));
+  border: 1px solid rgba(255,255,255,0.12);
+  box-shadow: var(--shadow);
+}
+
+.card.active {
+  display: block;
+}
+
+.card.has-photo {
+  background-image: linear-gradient(135deg, rgba(0,0,0,0.45), rgba(0,0,0,0.72)), var(--card-bg);
+  background-size: cover;
+  background-position: center;
+}
+
+.card-content {
+  position: relative;
+  z-index: 2;
+  width: min(100%, 760px);
+  margin: 0 auto;
+  padding: 22px 18px;
+}
+
+.progress-wrap {
+  width: 100%;
+  margin: 10px 0 16px;
+}
+
+.progress-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+  color: var(--ink-muted);
+}
+
+.progress-track {
+  width: 100%;
+  height: 10px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.progress-fill {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, #22c55e, #06b6d4);
+  transition: width 0.25s ease;
+}
+
+h1 {
+  margin: 0 0 14px;
+  font-size: clamp(1.45rem, 3.6vw, 2.25rem);
+  line-height: 1.2;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+}
+
+h2 {
+  margin: 18px 0 10px;
+  font-size: clamp(1.1rem, 2.8vw, 1.4rem);
+  text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+}
+
+p {
+  margin: 0 0 12px;
+  font-size: clamp(1rem, 2.5vw, 1.08rem);
+  line-height: 1.65;
+  color: var(--ink-muted);
+  text-shadow: 0 1px 6px rgba(0,0,0,0.9);
+}
+
+.panel {
+  padding: 14px;
+  border-radius: 12px;
+  margin: 14px 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 16px;
+}
+
+.no-btn {
+  background: linear-gradient(135deg, var(--warn-1), var(--warn-2));
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.gallery-tools {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 10px;
+  margin: 12px 0;
+}
+
+.gallery-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.gallery-chip {
+  min-height: 34px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface-strong);
+  color: var(--ink);
+  box-shadow: none;
+}
+
+.gallery-chip.active {
+  background: linear-gradient(135deg, var(--brand-1), var(--brand-2));
+  color: #fff;
+}
+
+.gallery-item {
+  position: relative;
+}
+
+.fav-btn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  min-height: 28px;
+  height: 28px;
+  width: 28px;
+  border-radius: 999px;
+  padding: 0;
+  font-size: 15px;
+  background: rgba(2, 6, 23, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  z-index: 4;
+}
+
+.fav-btn.active {
+  background: #db2777;
+}
+
+.gallery-grid img,
+.gallery-grid video {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.2);
+  cursor: pointer;
+}
+
+#dashboard {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.metric {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.metric-value {
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.note-box {
+  margin-top: 12px;
+}
+
+.note-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+#startOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  background: linear-gradient(135deg, rgba(2, 6, 23, 0.94), rgba(15, 23, 42, 0.88));
+}
+
+.start-card {
+  width: min(100%, 620px);
+  border: 1px solid var(--border);
+  background: var(--surface-strong);
+  border-radius: 16px;
+  padding: 18px;
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+
+.start-title {
+  margin: 0 0 10px;
+}
+
+.start-sub {
+  margin-bottom: 14px;
+}
+
+#lightbox {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 14px;
+  background: rgba(0,0,0,0.84);
+  z-index: 2000;
+}
+
+#lightbox.active {
+  display: flex;
+}
+
+.lightbox-content {
+  position: relative;
+  width: min(96vw, 980px);
+  max-height: 88dvh;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #000;
+}
+
+.lightbox-content img,
+.lightbox-content video {
+  display: block;
+  width: 100%;
+  max-height: 88dvh;
+  object-fit: contain;
+  background: #000;
+}
+
+.lightbox-close {
+  position: fixed;
+  top: calc(12px + env(safe-area-inset-top));
+  right: 12px;
+  z-index: 2100;
+}
+
+.signature {
+  margin-top: 18px;
+  text-align: right;
+  color: #c7d2fe;
+  font-weight: 700;
+}
+
+#celebration {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1500;
+}
+
+.confetti-heart {
+  position: absolute;
+  font-size: 22px;
+  animation: fall 1.9s linear forwards;
+}
+
+@keyframes fall {
+  from { transform: translateY(-12vh) rotate(0deg); opacity: 1; }
+  to { transform: translateY(112vh) rotate(280deg); opacity: 0; }
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+  .brand {
+    font-size: 0.88rem;
+  }
+  .container {
+    padding-top: 88px;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+  .card {
+    min-height: calc(100dvh - 100px);
+    border-radius: 14px;
+  }
+  .card-content {
+    padding: 16px 12px 18px;
+  }
+  .gallery-grid {
+    grid-template-columns: repeat(auto-fill, minmax(102px, 1fr));
+  }
+  .gallery-grid img,
+  .gallery-grid video {
+    height: 102px;
+  }
+  .gallery-tools {
+    grid-template-columns: 1fr;
+  }
+  .navbar-actions {
+    gap: 6px;
+  }
+  .navbar-actions button {
+    padding: 8px 10px;
+    min-height: 38px;
+    font-size: 0.84rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { scroll-behavior: auto; }
+  .confetti-heart { animation: none; }
+}
+</style>
+</head>
+<body>
+  <div id="startOverlay" role="dialog" aria-modal="true" aria-label="Welcome Lilian">
+    <div class="start-card">
+      <h1 class="start-title">For Lilian Only</h1>
+      <p class="start-sub">This starts with a personal message made just for you.</p>
+      <div class="buttons">
+        <button type="button" onclick="openForHer()">Open My Letter</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="navbar">
+    <div class="brand">
+      <span class="brand-logo" aria-hidden="true">&#10084;&#65039;</span>
+      <span class="brand-name">Elvis &#10084;&#65039; Lilian</span>
+    </div>
+    <div class="navbar-actions">
+      <button id="themeToggle" type="button" onclick="toggleTheme()">Theme</button>
+      <button id="musicToggle" type="button" onclick="toggleMusic()">Music Off</button>
+      <button id="resumeBtn" type="button" onclick="resumeFlow()">Resume</button>
+      <button type="button" onclick="goGallery()">Gallery</button>
+    </div>
+  </div>
+
+  <audio id="music" preload="auto" loop></audio>
+
+  <div class="container" id="cards"></div>
+  <div id="celebration" aria-hidden="true"></div>
+
+  <div id="lightbox" role="dialog" aria-modal="true" aria-hidden="true">
+    <button class="lightbox-close" type="button" onclick="closeLightbox()">Close</button>
+    <div class="lightbox-content" id="lightbox-content"></div>
+  </div>
+
+<script>
+const allMedia = [
+  'images/1.jpeg',
+  'images/2.jpeg',
+  'images/3.jpeg',
+  'images/4.jpeg',
+  'images/5.jpeg',
+  'images/6.jpeg',
+  'images/7.jpeg',
+  'images/8.jpeg',
+  'images/ChatGPT Image Feb 9, 2026, 02_02_09 PM.png',
+  'images/couple1.jpeg',
+  'images/couple2.jpeg',
+  'images/couple3.jpeg',
+  'images/couple4.jpeg',
+  'images/couple5.jpeg',
+  'images/couple6.jpeg',
+  'images/elvis1.jpeg',
+  'images/elvis10.jpeg',
+  'images/elvis11.jpeg',
+  'images/elvis12.jpeg',
+  'images/elvis13.jpeg',
+  'images/elvis14.jpeg',
+  'images/elvis15.jpeg',
+  'images/elvis16.jpeg',
+  'images/elvis17.jpeg',
+  'images/elvis18.jpeg',
+  'images/elvis19.jpeg',
+  'images/elvis2.jpeg',
+  'images/elvis20.jpeg',
+  'images/elvis21.jpeg',
+  'images/elvis22.jpeg',
+  'images/elvis23.jpeg',
+  'images/elvis3.jpeg',
+  'images/elvis4.jpeg',
+  'images/elvis5.jpeg',
+  'images/elvis6.jpeg',
+  'images/elvis7.jpeg',
+  'images/elvis8.jpeg',
+  'images/elvis9.jpeg',
+  'images/family.jpeg',
+  'images/favourite.mp4',
+  'images/file_1770629677544.jpg',
+  'images/future.jpeg',
+  'images/IMG-20251124-WA0005.jpg',
+  'images/IMG-20251124-WA0007.jpg',
+  'images/IMG-20251124-WA0011.jpg',
+  'images/IMG-20251124-WA0012.jpg',
+  'images/IMG-20251215-WA0006.jpg',
+  'images/IMG-20251215-WA0010.jpg',
+  'images/IMG-20251215-WA0011.jpg',
+  'images/IMG-20251215-WA0012.jpg',
+  'images/IMG-20260209-WA0078.jpg',
+  'images/IMG-20260209-WA0079.jpg',
+  'images/IMG-20260209-WA0080.jpg',
+  'images/IMG-20260209-WA0082.jpg',
+  'images/IMG-20260209-WA0084.jpg',
+  'images/IMG-20260209-WA0085.jpg',
+  'images/IMG-20260209-WA0086.jpg',
+  'images/IMG-20260209-WA0087.jpg',
+  'images/IMG-20260209-WA0088.jpg',
+  'images/IMG-20260209-WA0089.jpg',
+  'images/IMG-20260209-WA0090.jpg',
+  'images/IMG-20260209-WA0093.jpg',
+  'images/IMG-20260209-WA0094.jpg',
+  'images/IMG-20260209-WA0095.jpg',
+  'images/IMG-20260209-WA0096.jpg',
+  'images/IMG-20260209-WA0097.jpg',
+  'images/IMG-20260209-WA0098.jpg',
+  'images/IMG-20260209-WA0099.jpg',
+  'images/IMG-20260209-WA0100.jpg',
+  'images/IMG-20260209-WA0101.jpg',
+  'images/IMG-20260209-WA0102.jpg',
+  'images/IMG-20260209-WA0103.jpg',
+  'images/IMG-20260209-WA0104.jpg',
+  'images/IMG-20260209-WA0105.jpg',
+  'images/IMG-20260209-WA0106.jpg',
+  'images/IMG-20260209-WA0107.jpg',
+  'images/IMG-20260209-WA0108.jpg',
+  'images/IMG-20260209-WA0109.jpg',
+  'images/IMG-20260209-WA0110.jpg',
+  'images/IMG-20260209-WA0111.jpg',
+  'images/IMG-20260209-WA0112.jpg',
+  'images/IMG-20260209-WA0113.jpg',
+  'images/IMG-20260209-WA0114.jpg',
+  'images/IMG-20260209-WA0115.jpg',
+  'images/IMG-20260209-WA0116.jpg',
+  'images/IMG-20260209-WA0117.jpg',
+  'images/IMG-20260209-WA0118.jpg',
+  'images/IMG-20260209-WA0119.jpg',
+  'images/IMG-20260209-WA0120.jpg',
+  'images/IMG-20260209-WA0121.jpg',
+  'images/IMG-20260209-WA0122.jpg',
+  'images/IMG-20260209-WA0123.jpg',
+  'images/IMG-20260209-WA0124.jpg',
+  'images/IMG-20260209-WA0125.jpg',
+  'images/IMG-20260209-WA0126.jpg',
+  'images/IMG-20260209-WA0127.jpg',
+  'images/IMG-20260209-WA0128.jpg',
+  'images/IMG-20260209-WA0129.jpg',
+  'images/IMG-20260209-WA0130.jpg',
+  'images/IMG-20260209-WA0131.jpg',
+  'images/IMG-20260209-WA0132.jpg',
+  'images/lilian1.jpeg',
+  'images/lilian10.jpeg',
+  'images/lilian11.jpeg',
+  'images/lilian12.jpeg',
+  'images/lilian13.jpeg',
+  'images/lilian14.jpeg',
+  'images/lilian15.jpeg',
+  'images/lilian16.jpeg',
+  'images/lilian17.jpeg',
+  'images/lilian18.jpeg',
+  'images/lilian19.jpeg',
+  'images/lilian2.jpeg',
+  'images/lilian20.jpeg',
+  'images/lilian21.jpeg',
+  'images/lilian22.jpeg',
+  'images/lilian23.jpeg',
+  'images/lilian24.jpeg',
+  'images/lilian25.jpeg',
+  'images/lilian26.jpeg',
+  'images/lilian27.jpeg',
+  'images/lilian28.jpeg',
+  'images/lilian29.jpeg',
+  'images/lilian3.jpeg',
+  'images/lilian30.jpeg',
+  'images/lilian31.jpeg',
+  'images/lilian32.jpeg',
+  'images/lilian33.jpeg',
+  'images/lilian34.jpeg',
+  'images/lilian35.jpeg',
+  'images/lilian4.jpeg',
+  'images/lilian5.jpeg',
+  'images/lilian6.jpeg',
+  'images/lilian7.jpeg',
+  'images/lilian8.jpeg',
+  'images/lilian9.jpeg',
+  'images/lilianschool.jpeg',
+  'images/lilianschool2.jpeg',
+  'images/lilianschool3.jpeg',
+  'images/lilianyong.jpeg',
+  'images/love.mp4',
+  'images/love1.mp4',
+  'images/Snapchat-1065320579.mp4',
+  'images/Snapchat-1245323703.jpg',
+  'images/Snapchat-124693862.jpg',
+  'images/Snapchat-1292865213.jpg',
+  'images/Snapchat-1421472334.mp4',
+  'images/Snapchat-1536399645.jpg',
+  'images/Snapchat-154006312.jpg',
+  'images/Snapchat-1568227557.jpg',
+  'images/Snapchat-1596101802.jpg',
+  'images/Snapchat-1640750921.mp4',
+  'images/Snapchat-169462701.jpg',
+  'images/Snapchat-1798661966.jpg',
+  'images/Snapchat-185233479.jpg',
+  'images/Snapchat-1875201044.jpg',
+  'images/Snapchat-1893073937.jpg',
+  'images/Snapchat-1896830582.jpg',
+  'images/Snapchat-1903006689.jpg',
+  'images/Snapchat-1913336071.jpg',
+  'images/Snapchat-1993972376.jpg',
+  'images/Snapchat-2013987102.mp4',
+  'images/Snapchat-2014696998.jpg',
+  'images/Snapchat-202324058.jpg',
+  'images/Snapchat-2076565559.jpg',
+  'images/Snapchat-2111125502.jpg',
+  'images/Snapchat-212643959.mp4',
+  'images/Snapchat-255408840.jpg',
+  'images/Snapchat-361936694.jpg',
+  'images/Snapchat-439793035.jpg',
+  'images/Snapchat-463781450.jpg',
+  'images/Snapchat-531889584.mp4',
+  'images/Snapchat-555715177.jpg',
+  'images/Snapchat-564786187.jpg',
+  'images/Snapchat-567122201.jpg',
+  'images/Snapchat-592230210.jpg',
+  'images/Snapchat-620897257.jpg',
+  'images/Snapchat-781442152.jpg',
+  'images/Snapchat-792333696.jpg',
+  'images/Snapchat-916107974.jpg',
+  'images/Snapchat-919705933.jpg',
+  'images/us1.jpeg',
+  'images/us2.jpeg',
+  'images/VID-20260209-WA0081.mp4',
+  'images/VID-20260209-WA0083.mp4'
+];
+
+const lilianBackgrounds = [
+  'images/lilian1.jpeg',
+  'images/lilian10.jpeg',
+  'images/lilian11.jpeg',
+  'images/lilian12.jpeg',
+  'images/lilian13.jpeg',
+  'images/lilian14.jpeg',
+  'images/lilian15.jpeg',
+  'images/lilian16.jpeg',
+  'images/lilian17.jpeg',
+  'images/lilian18.jpeg',
+  'images/lilian19.jpeg',
+  'images/lilian2.jpeg',
+  'images/lilian20.jpeg',
+  'images/lilian21.jpeg',
+  'images/lilian22.jpeg',
+  'images/lilian23.jpeg',
+  'images/lilian24.jpeg',
+  'images/lilian25.jpeg',
+  'images/lilian26.jpeg',
+  'images/lilian27.jpeg',
+  'images/lilian28.jpeg',
+  'images/lilian29.jpeg',
+  'images/lilian3.jpeg',
+  'images/lilian30.jpeg',
+  'images/lilian31.jpeg',
+  'images/lilian32.jpeg',
+  'images/lilian33.jpeg',
+  'images/lilian34.jpeg',
+  'images/lilian35.jpeg',
+  'images/lilian4.jpeg',
+  'images/lilian5.jpeg',
+  'images/lilian6.jpeg',
+  'images/lilian7.jpeg',
+  'images/lilian8.jpeg',
+  'images/lilian9.jpeg',
+  'images/lilianschool.jpeg',
+  'images/lilianschool2.jpeg',
+  'images/lilianschool3.jpeg',
+  'images/lilianyong.jpeg'
+];
+
+const photoExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.gif', '.bmp', '.avif'];
+const coupleBackgrounds = ['images/us1.jpeg', 'images/us2.jpeg'];
+const questions = [
+  'Do you feel safe being yourself with me?',
+  'Do you know I care even when I am quiet?',
+  'Do you feel appreciated by me?',
+  'Do you feel heard when you speak?',
+  'Do you know I do not expect perfection?',
+  'Do you feel calm when you think of us?',
+  'Do you trust my intentions?',
+  'Do you feel respected by my love?',
+  'Do you know I choose you daily?',
+  'Do you feel supported by me?',
+  'Do you know your feelings matter?',
+  'Do you feel comfortable taking space?',
+  'Do you believe we are growing together?',
+  'Do you know I am learning for you?',
+  'Do you feel valued just as you are?',
+  'Do you trust we can talk through things?',
+  'Do you know I am here for the long run?',
+  'Do you feel secure with my heart?',
+  'Do you feel loved in quiet moments?',
+  'Would you like to keep building this with me?'
+];
+
+const STORAGE_KEY = 'lilian_highspec_state_v1';
+const HER_NAME = 'Lilian';
+const answers = Array(questions.length).fill(null);
+const cardsContainer = document.getElementById('cards');
+const music = document.getElementById('music');
+const mediaMeta = allMedia.map(function(src, index) {
+  return {
+    id: index,
+    src: src,
+    type: src.toLowerCase().endsWith('.mp4') ? 'video' : 'image',
+    key: src.toLowerCase()
+  };
+});
+
+const appState = {
+  theme: 'night',
+  currentCard: 'intro',
+  answers: answers.slice(),
+  lastQuestion: 0,
+  galleryFilter: 'all',
+  galleryQuery: '',
+  gallerySort: 'name',
+  favorites: [],
+  note: '',
+  musicOn: false
+};
+
+function escapeAttr(value) {
+  return String(value).replace(/"/g, '&quot;');
+}
+
+function escapeCssUrl(value) {
+  return String(value).replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/\)/g, '\\)');
+}
+
+function hasCard(cardId) {
+  return Boolean(document.getElementById(cardId));
+}
+
+function persistState() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+  } catch (error) {
+    console.warn('State save skipped:', error);
+  }
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+    const saved = JSON.parse(raw);
+    if (saved && typeof saved === 'object') {
+      Object.assign(appState, saved);
+      if (Array.isArray(saved.answers)) {
+        for (let i = 0; i < questions.length; i++) {
+          answers[i] = saved.answers[i] ?? null;
+        }
+        appState.answers = answers.slice();
+      }
+      if (!Array.isArray(appState.favorites)) appState.favorites = [];
+      if (!['all', 'image', 'video', 'favorite'].includes(appState.galleryFilter)) appState.galleryFilter = 'all';
+      if (!['name', 'type', 'random'].includes(appState.gallerySort)) appState.gallerySort = 'name';
+      if (typeof appState.galleryQuery !== 'string') appState.galleryQuery = '';
+      if (typeof appState.note !== 'string') appState.note = '';
+      if (typeof appState.currentCard !== 'string') appState.currentCard = 'intro';
+      if (typeof appState.lastQuestion !== 'number' || Number.isNaN(appState.lastQuestion)) appState.lastQuestion = 0;
+      appState.lastQuestion = Math.max(0, Math.min(questions.length - 1, appState.lastQuestion));
+      appState.theme = appState.theme === 'day' ? 'day' : 'night';
+      appState.musicOn = Boolean(appState.musicOn);
+    }
+  } catch (error) {
+    console.warn('State load skipped:', error);
+  }
+}
+
+function resetJourneyToStart() {
+  for (let i = 0; i < questions.length; i++) {
+    answers[i] = null;
+  }
+  appState.answers = answers.slice();
+  appState.currentCard = 'intro';
+  appState.lastQuestion = 0;
+  persistState();
+}
+
+function applyTheme() {
+  document.body.setAttribute('data-theme', appState.theme === 'day' ? 'day' : 'night');
+  const toggle = document.getElementById('themeToggle');
+  if (toggle) {
+    toggle.textContent = appState.theme === 'day' ? 'Night' : 'Day';
+  }
+}
+
+function openForHer() {
+  const overlay = document.getElementById('startOverlay');
+  if (overlay) overlay.classList.add('hidden');
+  resumeFlow();
+}
+
+function toggleTheme() {
+  appState.theme = appState.theme === 'day' ? 'night' : 'day';
+  applyTheme();
+  persistState();
+}
+
+function cardWithPhoto(id, photo, contentHtml, active) {
+  const safePhoto = escapeCssUrl(photo || '');
+  return '<div class="card has-photo' + (active ? ' active' : '') + '" id="' + id + '" style="--card-bg:url(\'' + safePhoto + '\')">' +
+    '<div class="card-content">' + contentHtml + '</div></div>';
+}
+
+function cardPlain(id, contentHtml) {
+  return '<div class="card" id="' + id + '"><div class="card-content">' + contentHtml + '</div></div>';
+}
+
+function questionProgressBlock(index) {
+  const answeredCount = answers.filter(function(v) { return v !== null; }).length;
+  const pct = Math.round((answeredCount / questions.length) * 100);
+  return '<div class="progress-wrap">' +
+      '<div class="progress-meta"><span>Progress</span><span class="question-progress-label">' + pct + '% complete</span></div>' +
+      '<div class="progress-track"><div class="progress-fill question-progress-fill" style="width:' + pct + '%;"></div></div>' +
+    '</div>' +
+    '<p>Question ' + (index + 1) + ' of ' + questions.length + '</p>';
+}
+
+function initCards() {
+  const introPhoto = coupleBackgrounds[0] || lilianBackgrounds[0] || allMedia[0] || '';
+  const letterPhoto = coupleBackgrounds[1] || lilianBackgrounds[1] || allMedia[0] || '';
+
+  cardsContainer.innerHTML += cardWithPhoto(
+    'intro',
+    introPhoto,
+    '<h1>An Open Letter to My Lilian</h1>' +
+    '<p>Dear Lilian, I am sorry. I know my behavior these past days hurt you, and I want to say this clearly: I am sorry for how fear made me react.</p>' +
+    '<p>I want to show you love that feels safe, calm, and real.</p>' +
+    '<div id="dashboard">' +
+      '<div class="metric"><div class="metric-value" id="metricAnswered">0/' + questions.length + '</div><div>Questions Answered</div></div>' +
+      '<div class="metric"><div class="metric-value" id="metricYes">0</div><div>Yes Answers</div></div>' +
+      '<div class="metric"><div class="metric-value" id="metricFavs">0</div><div>Favorites</div></div>' +
+      '<div class="metric"><div class="metric-value" id="metricCompletion">0%</div><div>Completion</div></div>' +
+    '</div>' +
+    '<div class="note-box panel">' +
+      '<h2 style="margin-top:0;">Private Love Note</h2>' +
+      '<textarea id="loveNoteInput" rows="4" placeholder="Write what you want to remember..."></textarea>' +
+      '<div class="note-actions">' +
+        '<button type="button" onclick="copyNote()">Copy Note</button>' +
+        '<button type="button" onclick="downloadNote()">Download Note</button>' +
+      '</div>' +
+    '</div>' +
+    '<div class="buttons">' +
+      '<button type="button" onclick="showCard(\'letter\')">I Understand - Let us Begin</button>' +
+      '<button type="button" onclick="showCard(\'question-' + Math.min(appState.lastQuestion || 0, questions.length - 1) + '\')">Continue Questions</button>' +
+    '</div>',
+    true
+  );
+
+  cardsContainer.innerHTML += cardWithPhoto(
+    'letter',
+    letterPhoto,
+    '<h1>My Honest Heart</h1>' +
+    '<p>I did not show you my best self. I let fear and jealousy speak for me. That hurt you, and I am deeply sorry.</p>' +
+    '<h2>What I learned</h2>' +
+    '<div class="panel">Sometimes I read small moments as signs of loss and react from panic. I am working to stop this pattern and communicate with more trust.</div>' +
+    '<h2>What I want</h2>' +
+    '<div class="panel">I want us to grow with calm, honesty, and patience. I choose you every day.</div>' +
+    '<p>Will you give me a chance to keep proving this with actions?</p>' +
+    '<div class="buttons">' +
+      '<button type="button" onclick="showCard(\'question-0\')">Yes, with all my heart</button>' +
+      '<button type="button" class="no-btn" onclick="showCard(\'no\')">I need time</button>' +
+    '</div>' +
+    '<div class="signature">Forever yours,<br>Elvis</div>'
+  );
+
+  questions.forEach(function(q, i) {
+    const fallback = allMedia.find(function(src) {
+      return photoExtensions.some(function(ext) { return src.toLowerCase().endsWith(ext); });
+    }) || '';
+    const bg = lilianBackgrounds.length ? lilianBackgrounds[i % lilianBackgrounds.length] : fallback;
+    cardsContainer.innerHTML += cardWithPhoto(
+      'question-' + i,
+      bg,
+      '<h1>Question ' + (i + 1) + '</h1>' +
+      questionProgressBlock(i) +
+      '<p>' + q + '</p>' +
+      '<div class="buttons">' +
+        '<button type="button" onclick="answerQuestion(' + i + ', true)">Yes</button>' +
+        '<button type="button" class="no-btn" onclick="answerQuestion(' + i + ', false)">No</button>' +
+      '</div>' +
+      '<div class="buttons">' +
+        '<button type="button" onclick="goPrevQuestion(' + i + ')">Previous</button>' +
+        '<button type="button" onclick="skipQuestion(' + i + ')">Skip</button>' +
+        '<button type="button" onclick="speakQuestion(' + i + ')">Read Aloud</button>' +
+      '</div>' +
+      '<div class="buttons"><button type="button" onclick="showCard(\'intro\')">Back to Start</button></div>'
+    );
+  });
+
+  cardsContainer.innerHTML += cardPlain(
+    'no',
+    '<h1>Take Your Time</h1>' +
+    '<p>I understand. If you need space, I will be here when you are ready.</p>' +
+    '<div class="buttons"><button type="button" onclick="showCard(\'intro\')">Back</button></div>'
+  );
+
+  cardsContainer.innerHTML += cardPlain(
+    'gallery',
+    '<h1>Moments We Shared</h1>' +
+    '<p>Advanced gallery: search, filter, favorite, and export your journey.</p>' +
+    '<div class="gallery-tools">' +
+      '<input type="text" id="gallerySearch" placeholder="Search by file name..." oninput="setGalleryQuery(this.value)">' +
+      '<select id="gallerySort" onchange="setGallerySort(this.value)">' +
+        '<option value="name">Sort: Name</option>' +
+        '<option value="type">Sort: Type</option>' +
+        '<option value="random">Sort: Random</option>' +
+      '</select>' +
+    '</div>' +
+    '<div class="gallery-filters">' +
+      '<button class="gallery-chip active" id="filter-all" type="button" onclick="setGalleryFilter(\'all\')">All</button>' +
+      '<button class="gallery-chip" id="filter-image" type="button" onclick="setGalleryFilter(\'image\')">Photos</button>' +
+      '<button class="gallery-chip" id="filter-video" type="button" onclick="setGalleryFilter(\'video\')">Videos</button>' +
+      '<button class="gallery-chip" id="filter-favorite" type="button" onclick="setGalleryFilter(\'favorite\')">Favorites</button>' +
+    '</div>' +
+    '<p id="galleryCount">0 items</p>' +
+    '<div class="gallery-grid" id="gallery-grid"></div>' +
+    '<div class="buttons">' +
+      '<button type="button" onclick="jumpRandomMedia()">Random Memory</button>' +
+      '<button type="button" onclick="exportSummary()">Export Summary</button>' +
+      '<button type="button" onclick="showCard(\'intro\')">Back to Start</button>' +
+    '</div>'
+  );
+}
+
+function updateMetrics() {
+  const answered = answers.filter(function(v) { return v !== null; }).length;
+  const yesCount = answers.filter(function(v) { return v === true; }).length;
+  const completion = Math.round((answered / questions.length) * 100);
+
+  const metricAnswered = document.getElementById('metricAnswered');
+  const metricYes = document.getElementById('metricYes');
+  const metricFavs = document.getElementById('metricFavs');
+  const metricCompletion = document.getElementById('metricCompletion');
+  if (metricAnswered) metricAnswered.textContent = answered + '/' + questions.length;
+  if (metricYes) metricYes.textContent = String(yesCount);
+  if (metricFavs) metricFavs.textContent = String(appState.favorites.length);
+  if (metricCompletion) metricCompletion.textContent = completion + '%';
+}
+
+function updateProgressUI() {
+  const answered = answers.filter(function(v) { return v !== null; }).length;
+  const pct = Math.round((answered / questions.length) * 100);
+  document.querySelectorAll('.question-progress-fill').forEach(function(el) {
+    el.style.width = pct + '%';
+  });
+  document.querySelectorAll('.question-progress-label').forEach(function(el) {
+    el.textContent = pct + '% complete';
+  });
+}
+
+function showCard(cardId) {
+  document.querySelectorAll('.card').forEach(function(card) { card.classList.remove('active'); });
+  const target = document.getElementById(cardId);
+  if (target) {
+    target.classList.add('active');
+    appState.currentCard = cardId;
+    persistState();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  if (cardId.indexOf('question-') === 0) {
+    const idx = Number(cardId.replace('question-', ''));
+    if (!Number.isNaN(idx)) {
+      appState.lastQuestion = idx;
+      persistState();
+    }
+  }
+  if (cardId === 'gallery') {
+    populateGallery();
+  }
+}
+
+function goPrevQuestion(index) {
+  if (index > 0) {
+    showCard('question-' + (index - 1));
+  } else {
+    showCard('letter');
+  }
+}
+
+function skipQuestion(index) {
+  answers[index] = null;
+  appState.answers = answers.slice();
+  appState.lastQuestion = Math.min(index + 1, questions.length - 1);
+  persistState();
+  updateProgressUI();
+  updateMetrics();
+  if (index + 1 < questions.length) {
+    showCard('question-' + (index + 1));
+  } else {
+    showCard('gallery');
+  }
+}
+
+function answerQuestion(index, value) {
+  answers[index] = value;
+  appState.answers = answers.slice();
+  appState.lastQuestion = Math.min(index + 1, questions.length - 1);
+  persistState();
+  updateProgressUI();
+  updateMetrics();
+  const next = index + 1;
+  if (next < questions.length) {
+    showCard('question-' + next);
+  } else {
+    triggerCelebration();
+    showCard('gallery');
+  }
+}
+
+function speakQuestion(index) {
+  if (!window.speechSynthesis) return;
+  const utterance = new SpeechSynthesisUtterance(questions[index] || '');
+  utterance.rate = 0.95;
+  utterance.pitch = 1;
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(utterance);
+}
+
+function filteredMedia() {
+  const query = (appState.galleryQuery || '').toLowerCase().trim();
+  let items = mediaMeta.filter(function(item) {
+    const typeOk = appState.galleryFilter === 'all' ||
+      (appState.galleryFilter === 'favorite' && appState.favorites.includes(item.src)) ||
+      item.type === appState.galleryFilter;
+    const queryOk = !query || item.key.indexOf(query) !== -1;
+    return typeOk && queryOk;
+  });
+
+  if (appState.gallerySort === 'type') {
+    items = items.slice().sort(function(a, b) { return a.type.localeCompare(b.type); });
+  } else if (appState.gallerySort === 'random') {
+    items = items.slice().sort(function() { return Math.random() - 0.5; });
+  } else {
+    items = items.slice().sort(function(a, b) { return a.src.localeCompare(b.src); });
+  }
+  return items;
+}
+
+function updateGalleryFilterUI() {
+  ['all', 'image', 'video', 'favorite'].forEach(function(type) {
+    const chip = document.getElementById('filter-' + type);
+    if (!chip) return;
+    chip.classList.toggle('active', appState.galleryFilter === type);
+  });
+}
+
+function populateGallery() {
+  const galleryGrid = document.getElementById('gallery-grid');
+  const galleryCount = document.getElementById('galleryCount');
+  if (!galleryGrid || !galleryCount) return;
+  galleryGrid.innerHTML = '';
+  const items = filteredMedia();
+
+  galleryCount.textContent = items.length + ' items';
+  updateGalleryFilterUI();
+
+  items.forEach(function(item) {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'gallery-item';
+
+    const fav = document.createElement('button');
+    fav.type = 'button';
+    fav.className = 'fav-btn' + (appState.favorites.includes(item.src) ? ' active' : '');
+    fav.textContent = appState.favorites.includes(item.src) ? '★' : '☆';
+    fav.setAttribute('aria-label', 'Toggle favorite');
+    fav.addEventListener('click', function(e) {
+      e.stopPropagation();
+      toggleFavorite(item.src);
+    });
+
+    if (item.type === 'video') {
+      const video = document.createElement('video');
+      video.src = item.src;
+      video.muted = true;
+      video.loop = true;
+      video.playsInline = true;
+      video.autoplay = true;
+      video.preload = 'metadata';
+      video.addEventListener('click', function() { openLightbox(item.src, true); });
+      video.addEventListener('error', function() { wrapper.remove(); });
+      wrapper.appendChild(video);
+    } else {
+      const img = document.createElement('img');
+      img.src = item.src;
+      img.alt = 'Gallery photo';
+      img.loading = 'lazy';
+      img.decoding = 'async';
+      img.addEventListener('click', function() { openLightbox(item.src, false); });
+      img.addEventListener('error', function() { wrapper.remove(); });
+      wrapper.appendChild(img);
+    }
+    wrapper.appendChild(fav);
+    galleryGrid.appendChild(wrapper);
+  });
+}
+
+function setGalleryFilter(type) {
+  appState.galleryFilter = type;
+  persistState();
+  populateGallery();
+}
+
+function setGalleryQuery(value) {
+  appState.galleryQuery = value || '';
+  persistState();
+  populateGallery();
+}
+
+function setGallerySort(value) {
+  appState.gallerySort = value || 'name';
+  persistState();
+  populateGallery();
+}
+
+function toggleFavorite(src) {
+  const idx = appState.favorites.indexOf(src);
+  if (idx >= 0) {
+    appState.favorites.splice(idx, 1);
+  } else {
+    appState.favorites.push(src);
+  }
+  persistState();
+  updateMetrics();
+  populateGallery();
+}
+
+function goGallery() {
+  showCard('gallery');
+}
+
+function jumpRandomMedia() {
+  const items = filteredMedia();
+  if (!items.length) return;
+  const random = items[Math.floor(Math.random() * items.length)];
+  openLightbox(random.src, random.type === 'video');
+}
+
+function openLightbox(src, video) {
+  const lightbox = document.getElementById('lightbox');
+  const content = document.getElementById('lightbox-content');
+  content.innerHTML = '';
+
+  if (video) {
+    const v = document.createElement('video');
+    v.src = src;
+    v.controls = true;
+    v.autoplay = true;
+    v.loop = true;
+    v.playsInline = true;
+    content.appendChild(v);
+  } else {
+    const img = document.createElement('img');
+    img.src = src;
+    img.alt = 'Gallery media';
+    content.appendChild(img);
+  }
+
+  lightbox.classList.add('active');
+  lightbox.setAttribute('aria-hidden', 'false');
+}
+
+function closeLightbox() {
+  const lightbox = document.getElementById('lightbox');
+  const content = document.getElementById('lightbox-content');
+  content.innerHTML = '';
+  lightbox.classList.remove('active');
+  lightbox.setAttribute('aria-hidden', 'true');
+}
+
+function toggleMusic() {
+  const musicToggle = document.getElementById('musicToggle');
+  if (!musicToggle) return;
+  if (!music.src) {
+    appState.musicOn = false;
+    musicToggle.textContent = 'No Music';
+    persistState();
+    return;
+  }
+  if (music.paused) {
+    music.play().then(function() {
+      appState.musicOn = true;
+      musicToggle.textContent = 'Music On';
+      persistState();
+    }).catch(function() {
+      appState.musicOn = false;
+      musicToggle.textContent = 'Music Off';
+      persistState();
+    });
+  } else {
+    music.pause();
+    appState.musicOn = false;
+    musicToggle.textContent = 'Music Off';
+    persistState();
+  }
+}
+
+function resumeFlow() {
+  const savedCard = appState.currentCard;
+  if (savedCard && hasCard(savedCard)) {
+    showCard(savedCard);
+    return;
+  }
+  if (typeof appState.lastQuestion === 'number' && appState.lastQuestion >= 0) {
+    const questionCard = 'question-' + Math.min(appState.lastQuestion, questions.length - 1);
+    if (hasCard(questionCard)) {
+      showCard(questionCard);
+      return;
+    }
+  }
+  showCard('intro');
+}
+
+function triggerCelebration() {
+  const celebration = document.getElementById('celebration');
+  if (!celebration) return;
+  celebration.innerHTML = '';
+  for (let i = 0; i < 28; i++) {
+    const heart = document.createElement('span');
+    heart.className = 'confetti-heart';
+    heart.textContent = ['\u2665', '\u2728', '\u2605'][i % 3];
+    heart.style.left = Math.random() * 100 + '%';
+    heart.style.animationDelay = (Math.random() * 0.4) + 's';
+    celebration.appendChild(heart);
+  }
+  setTimeout(function() {
+    celebration.innerHTML = '';
+  }, 2400);
+}
+
+function copyNote() {
+  const input = document.getElementById('loveNoteInput');
+  if (!input) return;
+  navigator.clipboard.writeText(input.value || '').catch(function() {});
+}
+
+function downloadText(filename, text) {
+  const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  setTimeout(function() { URL.revokeObjectURL(link.href); }, 500);
+}
+
+function downloadNote() {
+  const input = document.getElementById('loveNoteInput');
+  if (!input) return;
+  downloadText('love-note.txt', input.value || '');
+}
+
+function exportSummary() {
+  const yesCount = answers.filter(function(v) { return v === true; }).length;
+  const noCount = answers.filter(function(v) { return v === false; }).length;
+  const skippedCount = answers.filter(function(v) { return v === null; }).length;
+  const summary = [
+    'Relationship Journey Summary',
+    '--------------------------',
+    'Yes answers: ' + yesCount,
+    'No answers: ' + noCount,
+    'Skipped: ' + skippedCount,
+    'Favorites: ' + appState.favorites.length,
+    '',
+    'Saved note:',
+    appState.note || '(empty)'
+  ].join('\n');
+
+  if (navigator.share) {
+    navigator.share({ title: 'Journey Summary', text: summary }).catch(function() {});
+  }
+  downloadText('journey-summary.txt', summary);
+}
+
+function bindLiveInputs() {
+  const noteInput = document.getElementById('loveNoteInput');
+  if (noteInput) {
+    noteInput.value = appState.note || '';
+    noteInput.addEventListener('input', function() {
+      appState.note = noteInput.value;
+      persistState();
+    });
+  }
+
+  const search = document.getElementById('gallerySearch');
+  const sort = document.getElementById('gallerySort');
+  if (search) search.value = appState.galleryQuery || '';
+  if (sort) sort.value = appState.gallerySort || 'name';
+}
+
+function configureMusicSource() {
+  if (music.getAttribute('src')) return true;
+  const candidate = allMedia.find(function(src) {
+    const lower = src.toLowerCase();
+    return lower.endsWith('.mp3') || lower.endsWith('.m4a') || lower.endsWith('.ogg') || lower.endsWith('.wav') || lower.endsWith('.mp4');
+  });
+  if (!candidate) return false;
+  music.src = candidate;
+  return true;
+}
+
+document.getElementById('lightbox').addEventListener('click', function(e) {
+  if (e.target === this) closeLightbox();
+});
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeLightbox();
+  if (e.key.toLowerCase() === 'g') goGallery();
+  if (e.key.toLowerCase() === 'r') resumeFlow();
+});
+
+window.addEventListener('load', function() {
+  loadState();
+  applyTheme();
+  music.volume = 0.5;
+  const hasMusic = configureMusicSource();
+  initCards();
+  bindLiveInputs();
+  updateMetrics();
+  updateProgressUI();
+  resumeFlow();
+
+  const musicToggle = document.getElementById('musicToggle');
+  if (!hasMusic && musicToggle) {
+    musicToggle.textContent = 'No Music';
+    musicToggle.disabled = true;
+  } else if (appState.musicOn && music && music.paused) {
+    music.play().then(function() {
+      musicToggle.textContent = 'Music On';
+    }).catch(function() {
+      musicToggle.textContent = 'Music Off';
+      appState.musicOn = false;
+      persistState();
+    });
+  } else if (musicToggle) {
+    musicToggle.textContent = appState.musicOn ? 'Music On' : 'Music Off';
+  }
+
+  const brandName = document.querySelector('.brand-name');
+  if (brandName) {
+    brandName.textContent = 'Elvis \u2665 ' + HER_NAME;
+  }
+
+  const overlay = document.getElementById('startOverlay');
+  if (overlay) {
+    overlay.classList.remove('hidden');
+  }
+});
+</script>
+</body>
+</html>
