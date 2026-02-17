@@ -514,6 +514,10 @@ p {
     <div class="lightbox-content" id="lightbox-content"></div>
   </div>
 
+  <!-- Camera helpers for capture (hidden) -->
+  <video id="cameraStream" style="display:none;" width="640" height="480" autoplay muted playsinline></video>
+  <canvas id="cameraCanvas" style="display:none;"></canvas>
+
 <script>
 const allMedia = [
   'images/1.jpeg',
@@ -995,6 +999,8 @@ function initCards() {
         '<option value="type">Sort: Type</option>' +
         '<option value="random">Sort: Random</option>' +
       '</select>' +
+      '<input type="file" id="fileInput" accept="image/*,video/*" multiple style="min-height:44px;" />' +
+      '<button id="captureButton" type="button" onclick="captureMedia()">Take Photo/Video</button>' +
     '</div>' +
     '<div class="gallery-filters">' +
       '<button class="gallery-chip active" id="filter-all" type="button" onclick="setGalleryFilter(\'all\')">All</button>' +
@@ -1376,6 +1382,78 @@ function bindLiveInputs() {
   const sort = document.getElementById('gallerySort');
   if (search) search.value = appState.galleryQuery || '';
   if (sort) sort.value = appState.gallerySort || 'name';
+
+  // file input for uploads
+  const fileInput = document.getElementById('fileInput');
+  if (fileInput) {
+    fileInput.addEventListener('change', function(e) {
+      const files = e.target.files || [];
+      handleFiles(files);
+      // clear input to allow re-uploading same file
+      fileInput.value = '';
+    });
+  }
+
+  // ensure capture button text is correct
+  const captureBtn = document.getElementById('captureButton');
+  if (captureBtn) captureBtn.textContent = 'Take Photo/Video';
+}
+
+// --- Upload / Camera integration ---
+function handleFiles(files) {
+  for (let i = 0; i < files.length; i++) {
+    const f = files[i];
+    if (!f || !f.type) continue;
+    const type = f.type.startsWith('video') ? 'video' : 'image';
+    const src = URL.createObjectURL(f);
+    mediaMeta.push({ id: mediaMeta.length, src: src, type: type, key: src.toLowerCase() });
+  }
+  populateGallery();
+  updateMetrics();
+}
+
+let _cameraStream = null;
+function captureMedia() {
+  const videoEl = document.getElementById('cameraStream');
+  const captureBtn = document.getElementById('captureButton');
+  if (!_cameraStream) {
+    navigator.mediaDevices.getUserMedia({ video: true, audio: false }).then(function(stream) {
+      _cameraStream = stream;
+      videoEl.srcObject = stream;
+      videoEl.style.display = 'block';
+      if (captureBtn) captureBtn.textContent = 'Capture Photo';
+    }).catch(function(err) {
+      console.warn('Camera denied or not available', err);
+    });
+    return;
+  }
+  // if stream active, capture a photo
+  capturePhoto();
+}
+
+function capturePhoto() {
+  const videoEl = document.getElementById('cameraStream');
+  const canvas = document.getElementById('cameraCanvas');
+  if (!videoEl || !canvas) return;
+  canvas.width = videoEl.videoWidth || 640;
+  canvas.height = videoEl.videoHeight || 480;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(videoEl, 0, 0, canvas.width, canvas.height);
+  const dataURL = canvas.toDataURL('image/png');
+  mediaMeta.push({ id: mediaMeta.length, src: dataURL, type: 'image', key: dataURL.toLowerCase() });
+  populateGallery();
+  updateMetrics();
+  stopCamera();
+}
+
+function stopCamera() {
+  if (!_cameraStream) return;
+  _cameraStream.getTracks().forEach(function(t) { t.stop(); });
+  _cameraStream = null;
+  const videoEl = document.getElementById('cameraStream');
+  if (videoEl) videoEl.style.display = 'none';
+  const captureBtn = document.getElementById('captureButton');
+  if (captureBtn) captureBtn.textContent = 'Take Photo/Video';
 }
 
 function configureMusicSource() {
